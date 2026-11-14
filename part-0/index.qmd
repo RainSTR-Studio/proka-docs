@@ -1,4 +1,18 @@
-# About this manual
+# About this documentation
 
-## Lead-in
-This is the first part of this docs. In this part, you will firstly know the effect of this docs, and the basic architecture of ProkaOS.
+## Lead-in {.unnumbered .unlisted}
+This part generally describes:
+
+- what ProkaOS is and its design goals;
+- the unique design highlights of ProkaOS;
+- the basic architecture overview of the entire ProkaOS.
+
+Tips of reading this part:
+
+1. This is just a overview, so we won't expand too detailed. For further informations, you could skip ahead to your target parts;
+2. You do not need to memorize every single detail in this parts; 
+
+---
+
+**This part is fit for every reader of this documentation.**
+
