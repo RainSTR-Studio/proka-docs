@@ -1,0 +1,18 @@
+# Introduction
+
+## Overview
+Proka Executable (*PKE*) is an executable developed by *RainSTR Studio*. It keeps *Simple, Multiple usage* and is fit for the current ProkaOS architecture.
+
+In order to parse PKE easily, we have made a Rust crate on [crates.io](https://crates.io/crates/proka-exec), and [Docs.rs](https://docs.rs/proka-exec) for definitions.
+
+The source repository is at *https://github.com/RainSTR-Studio/proka-exec.git*
+
+## Each element of PKE
+These are the elements which PKE had:
+
+- `Header`: The identify of PKE, which also contains important data;
+- `SectionIndex`: Describes where the `SectionHeader` is and the section name size;
+- `SectionHeader`: Essential information container of a section;
+- *Section Name*: The name of section;
+
+We will explain it further in *Chapter 4*.

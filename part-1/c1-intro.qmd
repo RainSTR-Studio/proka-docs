@@ -12,7 +12,9 @@ This documentation is suitable for these people:
 - Operating system developer;
 - Linker developer;
 - Anyone who wants to design their own architectures;
-- ~~Anyone who wants to learn English~~.
+- ~~Anyone who wants to learn English~~;
+
+and more. Due to the limit of this passage, we cannot list all of them at all.
 
 ## Highlights of ProkaOS
 - **More safety**: By **separating driver and kernel**, the malicious driver will not BOOM the whole OS easily;

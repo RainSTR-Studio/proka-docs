@@ -1,0 +1,26 @@
+# Proka Executable
+
+## Lead-in {.unnumbered .unlisted}
+This part generally describes:
+
+- the PKE's basic structure;
+- the elements of PKE;
+- the sequence of each element in PKE format;
+- the ways to parse/construct an valid PKE format;
+
+Some tips of reading this part:
+
+1. Notice the structure of each element, which may be frequently used in your development;
+2. The ways to help you parse/construct PKE is very useful for you to write your own parser/builder.
+
+---
+
+This part is intended for:
+
+- **Linker developers** who want to support PKE as an output file;
+- **Operating system developers** who want to add support for running PKE binaries;
+- **Compiler backend developers** (to emit PKE object / executable);
+- **Reverse engineers** who need to inspect and analyze PKE binaries;
+- **Toolchain maintainers** working on ProkaOS tooling;
+- **Application developers** who want to understand how PKE executables work under the hood;
+

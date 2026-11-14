@@ -25,7 +25,7 @@ The **Proka Kernel** ([`proka-kernel`](https://github.com/RainSTR-Studio/proka-k
 The core design is mostly in kernel. We are now separating them to describe one by one.
 
 ### Process Model
-Just as I.1.2 mentions, the ProkaOS separated the process into 2 parts: **Driver Process** and **Normal Process**. For convenience, we'd like to call them as **DPD** (*Driver Process Domain*) and **NPD** (*Normal Process Domain*).
+Just as 1.2 mentions, the ProkaOS separated the process into 2 parts: **Driver Process** and **Normal Process**. For convenience, we'd like to call them as **DPD** (*Driver Process Domain*) and **NPD** (*Normal Process Domain*).
 
 See also: *Part IV: Process Model*
 
@@ -36,6 +36,6 @@ Drivers can register syscall or drvcall (*Driver Call*) in their runtime, and th
 
 The user program or driver can use a way (will explain in ahead) to get syscall/drvcall table, and invoke them directly.
 
-*NOTE*: Only driver can register syscall/drvcall; for normal programs... hmm... ~~why even sign up bruh? XD~~
+*NOTE*: Only driver can register syscall/drvcall; for normal programs, it's unnessary and unsafe.
 
 See also: *Part V: SMS/DMS*
