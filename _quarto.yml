@@ -9,10 +9,10 @@ book:
   page-footer: "Copyright (C) RainSTR Studio 2026" 
   chapters:
     - index.qmd
-    - part: part-0/index.qmd
+    - part: part-1/index.qmd
       chapters:
-        - part-0/c1-intro.qmd
-        - part-0/c2-basic-arch.qmd
+        - part-1/c1-intro.qmd
+        - part-1/c2-basic-arch.qmd
 
 format:
   html:
