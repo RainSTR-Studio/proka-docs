@@ -12,6 +12,7 @@ book:
     - part: part-0/index.qmd
       chapters:
         - part-0/c1-intro.qmd
+        - part-0/c2-basic-arch.qmd
 
 format:
   html:

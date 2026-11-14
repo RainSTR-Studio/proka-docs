@@ -1,0 +1,41 @@
+# Basic Architecture Overview
+
+## Executables
+The **Proka Executable** ([`proka-exec`](https://github.com/RainSTR-Studio/proka-exec)) is an executable format developed by *RainSTR Studio*. 
+Since the PE/ELF, and other executable formats cannot satisfy the requirements of ProkaOS, the PKE (*the short form of Proka Executable*) came out to solve these problems.
+
+Furthermore, It's much more simple to parse than PE/ELF, which means it can save you a lot of time parsing PKE.
+
+See also: *Part II: Proka Executable*
+
+## Bootloaders
+The **Proka Bootloader** ([`proka-bootloader`](https://github.com/RainSTR-Studio/proka-bootloader)) is a standalone bootloader, created on Mar. 7, 2026, written by *RainSTR Studio*.
+
+About bootloaders, here's an interesting story:
+
+- When this project was created, we planned to use GRUB's *multiboot2* protocol at first. But *multiboot2* only takes us to 32-bit mode, so we can only write a stub to switch to 64-bit mode. It's hard, so soon we deprecated this plan.
+- Then we use *limine* instead. We accept that it's a great bootloader, but that's not enough - *zhangxuan2011*, a member of *RainSTR Studio*, wants to make up a self-developed bootloader, but it delayed for several months. 
+- On Mar. 7, 2026, he started the main developing process. 1 month later, the `proka-bootloader` is basically usable. Now the current version of kernel is based on it.
+
+For more information, see also: *Part III: Proka Bootloader*
+
+## Kernel
+The **Proka Kernel** ([`proka-kernel`](https://github.com/RainSTR-Studio/proka-kernel)) is the core part of ProkaOS. Without this component, the ProkaOS won't run.
+
+The core design is mostly in kernel. We are now separating them to describe one by one.
+
+### Process Model
+Just as I.1.2 mentions, the ProkaOS separated the process into 2 parts: **Driver Process** and **Normal Process**. For convenience, we'd like to call them as **DPD** (*Driver Process Domain*) and **NPD** (*Normal Process Domain*).
+
+See also: *Part IV: Process Model*
+
+### SMS/DMS
+**SMS/DMS**, is the short form of *Syscall Management System/Driver Call Management System*, or *SDMS* shorter, is a part of kernel, which connects each drivers and normal process.
+
+Drivers can register syscall or drvcall (*Driver Call*) in their runtime, and they can choose one favorite syscall/drvcall number (0..GRLEN - 1), even more than one syscall/drvcall.
+
+The user program or driver can use a way (will explain in ahead) to get syscall/drvcall table, and invoke them directly.
+
+*NOTE*: Only driver can register syscall/drvcall; for normal programs... hmm... ~~why even sign up bruh? XD~~
+
+See also: *Part V: SMS/DMS*
