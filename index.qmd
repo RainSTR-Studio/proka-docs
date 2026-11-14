@@ -1,0 +1,9 @@
+# Preface {.unnumbered}
+
+Welcome to read this documentation!
+
+This contains all ProkaOS components's docs, everything which is about ProkaOS can be found here.
+
+*NOTE:* The ProkaOS, including this docs, is still in early development. If you want to report some errors or contribute, we strongly and sincerely recommend you open an issue or a pull request in [this docs's repository](https://github.com/RainSTR-Studio/proka-docs).
+
+Anyway, enjoy your reading time :)

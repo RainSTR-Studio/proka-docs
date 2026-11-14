@@ -1,0 +1,23 @@
+project:
+  type: book
+
+book:
+  title: "ProkaOS Software Architecture"
+  subtitle: "Documentation"
+  author: "RainSTR Studio"
+  date: "11/14/2026"
+  chapters:
+    - index.qmd
+    - part: part-0/index.qmd
+      chapters:
+        - part-0/c1-intro.qmd
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+  pdf:
+    documentclass: scrreprt
+
+

@@ -1,0 +1,4 @@
+# About this manual
+
+## Lead-in
+This is the first part of this docs. In this part, you will firstly know the effect of this docs, and the basic architecture of ProkaOS.

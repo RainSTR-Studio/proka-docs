@@ -1,0 +1,24 @@
+# Introduction
+
+## Overview
+
+ProkaOS, is an operating system, which is developed by some young developers. Since the first day of developing, we have set up our goal: Make our own operating system, which is **simple, secure, and standalone** (3S).
+
+Since the architecture is different from other famous OS (e.g. Windows, Linux, etc.), we made this documentation to help software developers make their software on ProkaOS easily.
+
+This documentation is suitable for these people:
+
+- Userspace software developer;
+- Driver developer;
+- Operating system developer;
+- Linker developer;
+- Anyone who wants to design their own architectures;
+- ~~Anyone who wants to learn English~~.
+
+## Highlights of ProkaOS
+
+- More safety: By **separating driver and kernel**, the malicious driver will not BOOM the whole OS easily;
+- Two independent process domain: Unlike traditional and other hobby OS, we made 2 domains/kinds of process, which is **Driver Process** (R0) and **Normal Process** (R3), so that the driver can be load dynamically;
+- More flexible: Dynamic syscall/drvcall, without using a syscall number which you don't like, and **flexible syscall registration** allows for more efficient task processing;
+- Independent Executable Format: Deprecating traditional PE/ELF format, we are using a new and self-designed format: **PKE**, which is much more fit for this architecture;
+- Independent bootloader: Instead of using GRUB/limine, we switched into our own bootloader: **proka-bootloader**, which is much more simple compared with those bootloader above.
