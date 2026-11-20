@@ -1,4 +1,4 @@
-# Introduction
+# Introduction of Proka Executable
 
 ## Overview
 Proka Executable (*PKE*) is an executable developed by *RainSTR Studio*. It keeps *Simple, Multiple usage* and is fit for the current ProkaOS architecture.
@@ -16,3 +16,14 @@ These are the elements which PKE had:
 - *Section Name*: The name of section;
 
 We will explain it further in *Chapter 4*.
+
+## Basic Structure of PKE
+Compared with ELF, PKE's designing is much more simple. Here is the basic structure of PKE, which shows the sequence of each elements:
+
+![Structures of PKE](../assets/fig-3.2-struct-pke.svg)
+
+From this figure, you could find that:
+
+- The `Header` is in the head of the whole file. You need to get some essential informations from this part for further parsing;
+- The `SectionIndex` is following the `Header`. You can read this to fine **where the `SectionMetadata` is** and **the length of the *Section Name* **;
+- The `SectionMetadata` combines `SectionHeader` and *Section Name*. For flexibility, the *Section Name*'s size is **NOT** fixed, and the length could be find at `SectionIndex`.

@@ -2,8 +2,8 @@ project:
   type: book
 
 book:
-  title: "ProkaOS Software Architecture"
-  subtitle: "Documentation"
+  title: "ProkaOS Software Architecture Documentation & Component Specifications"
+  subtitle: "(Revision 0)"
   author: "RainSTR Studio"
   date: "11/14/2026"
   page-footer: "Copyright (C) RainSTR Studio 2026" 

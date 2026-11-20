@@ -1,4 +1,4 @@
-# Introduction
+# Introduction of ProkaOS
 
 ## Overview
 ProkaOS, is an operating system, which is developed by some young developers. Since the first day of developing, we have set up our goal: Make our own operating system, which is **simple, secure, and standalone** (3S).
