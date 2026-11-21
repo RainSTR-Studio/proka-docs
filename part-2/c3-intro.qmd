@@ -5,7 +5,7 @@ Proka Executable (*PKE*) is an executable developed by *RainSTR Studio*. It keep
 
 In order to parse PKE easily, we have made a Rust crate on [crates.io](https://crates.io/crates/proka-exec), and [Docs.rs](https://docs.rs/proka-exec) for definitions.
 
-The source repository is at *https://github.com/RainSTR-Studio/proka-exec.git*
+The source repository is stored in [GitHub](https://github.com/RainSTR-Studio/proka-exec.git). You could view the source code through this link.
 
 ## Each element of PKE
 These are the elements which PKE had:
@@ -15,7 +15,7 @@ These are the elements which PKE had:
 - `SectionHeader`: Essential information container of a section;
 - *Section Name*: The name of section;
 
-We will explain it further in *Chapter 4*.
+For further definitions and usage of each elements in PKE, you could see also *Chapter 4*.
 
 ## Basic Structure of PKE
 Compared with ELF, PKE's designing is much more simple. Here is the basic structure of PKE, which shows the sequence of each elements:
@@ -27,3 +27,9 @@ From this figure, you could find that:
 - The `Header` is in the head of the whole file. You need to get some essential informations from this part for further parsing;
 - The `SectionIndex` is following the `Header`. You can read this to fine **where the `SectionMetadata` is** and **the length of the *Section Name* **;
 - The `SectionMetadata` combines `SectionHeader` and *Section Name*. For flexibility, the *Section Name*'s size is **NOT** fixed, and the length could be find at `SectionIndex`.
+
+::: {.callout-note}
+- When parsing a PKE file, the length value of the section name obtained from the section header does **NOT** include a trailing NUL (`\0`) byte.
+- This figure only shows the situation that *only 1 section in this PKE file*. In actual situations, the `SectionIndex` is multiple, which is next to the previous `SectionIndex` or `Header`. Same as `SectionMetadata`.
+:::
+
