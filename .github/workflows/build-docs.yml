@@ -50,7 +50,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y texlive-full
+          quarto install tinytex
           sudo apt install -y librsvg2-bin
 
       # Run CLI to build
@@ -107,13 +107,14 @@ jobs:
           cd _book
           zip -r -T ../ProkaOS-Arch-Component-Spec.zip . -9
           cd ..
+          mv _book docs-index
 
       # Upload artifacts
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: proka-docs-html
-          path: ProkaOS-Arch-Component-Spec.zip
+          path: docs-index
 
       # Upload releases (if tags)
       - name: Release
