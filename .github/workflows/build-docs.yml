@@ -1,0 +1,123 @@
+# This is a CI to build documentations.
+name: Build Documentations
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Global env
+env:
+  # Quarto version
+  QUARTO_VERSION: '1.11.9'
+
+# Configure permissions to upload releases
+permissions:
+  contents: write
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build-pdf:
+    # Name of this workflow
+    name: Build PDF
+    
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Install Quarto for building PDF
+      - name: Install Quarto
+        run: |
+          curl -O https://github.com/quarto-dev/quarto-cli/releases/download/v$QUARTO_VERSION/quarto-$QUARTO_VERSION-linux-amd64.deb
+          sudo apt update
+          sudo apt install -y ./quarto-$QUARTO_VERSION-linux-amd64.deb
+          rm quarto-$QUARTO_VERSION-linux-amd64.deb
+
+      # Install Texlive for PDF rendering
+      - name: Install Texlive
+        run: |
+          sudo apt update
+          sudo apt install -y texlive-full
+
+      # Run CLI to build
+      - name: Build PDF file
+        run: |
+          # Command to build PDF
+          quarto render --to pdf
+
+          # Rename file for convenience
+          mv _book/ProkaOS-Software-Architecture-Documentation---Component-Specifications.pdf ProkaOS-Arch-Component-Spec.pdf
+
+      # Upload artifacts
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: proka-docs-pdf
+          path: ProkaOS-Arch-Component-Spec.pdf
+
+      # Upload releases (if tags)
+      - name: Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ProkaOS-Arch-Component-Spec.pdf
+
+  # Build HTML
+  build-html:
+    name: Build HTML
+    
+    # Type of runner will run on
+    runs-on: ubuntu-latest
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v4
+
+      # Install Quarto
+      - name: Install Quarto
+        run: |
+          curl -O https://github.com/quarto-dev/quarto-cli/releases/download/v$QUARTO_VERSION/quarto-$QUARTO_VERSION-linux-amd64.deb
+          sudo apt update
+          sudo apt install -y ./quarto-$QUARTO_VERSION-linux-amd64.deb
+          rm quarto-$QUARTO_VERSION-linux-amd64.deb
+
+      # Install ZIPPER
+      - name: Install ZIP
+        run: |
+          sudo apt install -y zip unzip
+          
+      # Build HTML and Archive it
+      - name: Build HTML
+        run: |
+          quarto render --to html
+          cd _book
+          zip -r -T ../ProkaOS-Arch-Component-Spec.zip . -9
+          cd ..
+
+      # Upload artifacts
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: proka-docs-html
+          path: ProkaOS-Arch-Component-Spec.zip
+
+      # Upload releases (if tags)
+      - name: Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ProkaOS-Arch-Component-Spec.zip
+          
