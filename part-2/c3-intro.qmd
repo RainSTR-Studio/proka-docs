@@ -33,3 +33,4 @@ From this figure, you could find that:
 - This figure only shows the situation that *only 1 section in this PKE file*. In actual situations, the `SectionIndex` is multiple, which is next to the previous `SectionIndex` or `Header`. Same as `SectionMetadata`.
 :::
 
+After getting the basic structure of PKE, we will talk about the definitions of each elements in this ~~lovely~~ good executable format.

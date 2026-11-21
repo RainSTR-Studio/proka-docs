@@ -14,11 +14,19 @@ This documentation is suitable for these people:
 - Anyone who wants to design their own architectures;
 - ~~Anyone who wants to learn English~~;
 
-and more. Due to the limit of this passage, we cannot list all of them at all.
+and more. Due to the limit of this passage, we cannot list all of them at all. For detailed suitable people, you could view *Lead-in* part in each parts.
 
 ## Highlights of ProkaOS
+Compared with other hobby OSes, ProkaOS has these advantages:
+
 - **More safety**: By **separating driver and kernel**, the malicious driver will not BOOM the whole OS easily;
 - **Two independent process domain**: Unlike traditional and other hobby OS, we made 2 domains/kinds of process, which is **Driver Process** (R0) and **Normal Process** (R3), so that the driver can be load dynamically;
 - **More flexible**: Dynamic syscall/drvcall, without using a syscall number which you don't like, and **flexible syscall registration** allows for more efficient task processing;
 - **Independent Executable Format**: Deprecating traditional PE/ELF format, we are using a new and self-designed format: **PKE**, which is much more fit for this architecture;
 - **Independent bootloader**: Instead of using GRUB/limine, we switched into our own bootloader: **proka-bootloader**, which is much more simple compared with those bootloader above.
+
+## Some Limitations of ProkaOS
+The design of ProkaOS has these limitations, which could be improved in further revisions:
+
+- **Performance**: Since the driver and kernel is separated, the page table switching would be increased. That defintally cause some performance problem;
+- **Complexity**: This architecture is still in development, and different with monolithic and microkernel, this is a bit hard to implement and a bit complex.

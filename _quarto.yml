@@ -16,6 +16,7 @@ book:
     - part: part-2/index.qmd
       chapters:
         - part-2/c3-intro.qmd
+        - part-2/c4-pke-defs.qmd
 
 format:
   html:

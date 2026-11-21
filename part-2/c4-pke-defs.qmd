@@ -1,0 +1,53 @@
+# Definitions of Each Elements of PKE
+
+## `Header`
+The `Header` is defined as follow:
+
+```rust
+#[repr(C)]
+#[derive(Debug, Clone, Copy, Pod, Zeroable)]
+pub struct Header {
+    pub magic: u32,
+    pub version_current: u32,
+    pub version_minimal: u32,
+    _pad1: [u8; 4],
+    pub min: [u16; 3],
+    _pad2: [u8; 2],
+    pub max: [u16; 3],
+    _pad3: [u8; 2],
+    pub mode: ExecMode,
+    _pad4: [u8; 3],
+    pub sections: u16,
+    pub entry_sec: u16,
+    pub entry_off: u32,
+    pub author: [u8; 32],
+    pub name: [u8; 32],
+    pub _reserved: [u8; 20],
+}
+```
+
+Each field's descriptions:
+
+| Field name 	| Type 	| Is public 	| Description 	|
+|:---	|:---	|:---	|:---	|
+| `magic` 	| `u32` 	| yes 	| The magic number of PKE. Fixed to `PKEX`. 	|
+| `version_current` 	| `u32` 	| yes 	| Current PKE version. 	|
+| `version_minimal` 	| `u32` 	| yes 	| The minimal version of PKE parser supported. 	|
+| `_pad1` 	| `[u8; 4]` 	| no 	| Padding field #1. 	|
+| `min` 	| `[u16; 3]` 	| yes 	| Minimal **kernel** version supported. The format of version is `[major, minor, patch]`. 	|
+| `_pad2` 	| `[u8; 2]` 	| no 	| Padding field #2. 	|
+| `max` 	| `[u16; 3]` 	| yes 	| Maximum **kernel** version supported. Formatted as above. 	|
+| `_pad3` 	| `[u8; 2]` 	| no 	| Padding field #3. 	|
+| `mode` 	| `ExecMode` 	| yes 	| Executable Mode. Further information see `ExecMode` type. 	|
+| `_pad4` 	| `[u8; 3]` 	| no 	| Padding field #4. 	|
+| `sections` 	| `u16` 	| yes 	| Section amounts of this PKE. 	|
+| `entry_sec` 	| `u16` 	| yes 	| The section index where the **entry point** lives in. 	|
+| `entry_off` 	| `u32` 	| yes 	| Offset bytes of this **entry point** sections. 	|
+| `author` 	| `[u8; 32]` 	| yes 	| Author name. Limited to 32-bytes long, NUL byte (`\0`) not needed. 	|
+| `name` 	| `[u8; 32]` 	| yes 	| App name. Limited to 32-bytes long, NUL byte (`\0`) not needed. 	|
+| `reserved` 	| `[u8; 20]` 	| yes 	| Reserved fields for further features. 	|
+
+::: {.callout-note}
+According to the source code above, there are 2 derived traits that is **NOT** from Rust `std` or `core` crate, which are called `Pod` and `Zeroable`. These traits are from `bytemucks` crate, which mainly helps us check whether this struct can be directly transformed from raw data. Same sense ahead.
+:::
+
