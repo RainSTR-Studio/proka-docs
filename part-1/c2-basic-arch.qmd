@@ -32,7 +32,11 @@ See also: *Part IV: Process Model*
 ### SMS/DMS
 **SMS/DMS**, is the short form of *Syscall Management System/Driver Call Management System*, or *SDMS* shorter, is a part of kernel, which connects each drivers and normal process.
 
-Drivers can register syscall or drvcall (*Driver Call*) in their runtime, and they can choose one favorite syscall/drvcall number (0..GRLEN - 1), even more than one syscall/drvcall.
+Drivers can register syscall or drvcall (*Driver Call*) in their runtime, and they can choose one favorite syscall/drvcall number ( $n \in [0, 2^{\mathit{GRLEN}})$ ), even more than one syscall/drvcall.
+
+::: {.callout-note}
+The *GRLEN* is the register bits length. For example, in i386, *GRLEN*=32; in x86_64, *GRLEN*=64; in 8086, *GRLEN*=16...
+:::
 
 The user program or driver can use a way (will explain in ahead) to get syscall/drvcall table, and invoke them directly.
 

@@ -1,6 +1,8 @@
 # Definitions of Each Elements of PKE
 
-## `Header`
+## Definitions of PKE headers
+
+### `Header`
 The `Header` is defined as follow:
 
 ```rust
@@ -26,6 +28,10 @@ pub struct Header {
 }
 ```
 
+::: {.callout-note} 
+According to the source code above, there are 2 derived traits that is **NOT** from Rust `std` or `core` crate, which are called `Pod` and `Zeroable`. These traits are from `bytemucks` crate, which mainly helps us check whether this struct can be directly transformed from raw data. Same sense ahead.
+:::
+
 Each field's descriptions:
 
 | Field name 	| Type 	| Is public 	| Description 	|
@@ -38,16 +44,37 @@ Each field's descriptions:
 | `_pad2` 	| `[u8; 2]` 	| no 	| Padding field #2. 	|
 | `max` 	| `[u16; 3]` 	| yes 	| Maximum **kernel** version supported. Formatted as above. 	|
 | `_pad3` 	| `[u8; 2]` 	| no 	| Padding field #3. 	|
-| `mode` 	| `ExecMode` 	| yes 	| Executable Mode. Further information see `ExecMode` type. 	|
+| `mode` 	| `ExecMode` 	| yes 	| Executable Mode. See @sec-pke-header-execmode for more informations. 	|
 | `_pad4` 	| `[u8; 3]` 	| no 	| Padding field #4. 	|
 | `sections` 	| `u16` 	| yes 	| Section amounts of this PKE. 	|
 | `entry_sec` 	| `u16` 	| yes 	| The section index where the **entry point** lives in. 	|
 | `entry_off` 	| `u32` 	| yes 	| Offset bytes of this **entry point** sections. 	|
 | `author` 	| `[u8; 32]` 	| yes 	| Author name. Limited to 32-bytes long, NUL byte (`\0`) not needed. 	|
 | `name` 	| `[u8; 32]` 	| yes 	| App name. Limited to 32-bytes long, NUL byte (`\0`) not needed. 	|
-| `reserved` 	| `[u8; 20]` 	| yes 	| Reserved fields for further features. 	|
+| `reserved` 	| `[u8; 20]` 	| yes 	| Reserved fields for further features.		|
+
+### `ExecMode` {#sec-pke-header-execmode}
+The `ExecMode` is defined as follow:
+
+```rust
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Pod, Zeroable)]
+pub struct ExecMode(u8);
+
+impl ExecMode {
+    pub const UserApp: Self = 0x00;
+    pub const CoreDrv: Self = 0x01;
+}
+```
 
 ::: {.callout-note}
-According to the source code above, there are 2 derived traits that is **NOT** from Rust `std` or `core` crate, which are called `Pod` and `Zeroable`. These traits are from `bytemucks` crate, which mainly helps us check whether this struct can be directly transformed from raw data. Same sense ahead.
+If you check the source code of `proka-exec`, the `ExecMode` struct is wrapped by using `bitflags` macro. The definition that was given above is the expanded form. Wrapped struct will be marked ahead.
 :::
+
+Since this is based on bits, each bits' field is defined as following:
+
+| Field 	| Bits 	| Description 	|
+|---	|---	|---	|
+| Mode select 	| `0` 	| `0`=UserApp, `1`=Coredrv 	|
+| Reserved 	| `1..7` 	| Reserved, shall be ignored 	|
+
 
