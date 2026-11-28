@@ -1,11 +1,13 @@
 # Ways to Parse/Construct PKE
 
 ## Parse PKE
+
 Since you have known each elements and structure of PKE, we coild do further step - parse it.
 
 The first thing, which is also the most important thing is: to load PKE buffer into memory, or you couldn't parse it correctly.
 
 ::: {.callout-important}
+
 1. In this chapter, we might use some mathematics style. This constant in mathematics mode is defined as follow:
 
     - *b*: The base address of the whole PKE buffer ($b \in \mathbb{N}$);
@@ -15,6 +17,7 @@ The first thing, which is also the most important thing is: to load PKE buffer i
 :::
 
 ### Check `Header`
+
 Once you loaded the PKE buffer, please do:
 
 1. Check magic number. PKE'S magic is `PKEX`. If not, it's 100% incorrect;
@@ -25,15 +28,12 @@ Once you loaded the PKE buffer, please do:
 After this validation, the PKE is **seemed** legal. To het information of this PKE, feel free to see @sec-pke-header.
 
 ### Get Sections
+
 To get sections of PKE, you should construct `SectionIndex` first.
 
 Now you need to iterate each `SectionIndex`, the iteration counts can be find in `sections` field in `Header`.
 
 Let *i*=the index count, $a_{\mathit{si}}$=the address of destinition `SectionIndex`, then we have:
-
-$$
-a_{\mathit{si}} = b + \mathtt{0x80} + (\mathtt{0x40}i), \quad i \in [0, v_{\mathit{header}.\mathit{sections}})
-$$
 
 Since we have construct the `SectionIndex`, you could get `SectionHeader` to get further informations.
 
@@ -41,7 +41,7 @@ Let $a_{\mathit{sh}}$=`SectionHeader` address, *A*=all section name character se
 
 \begin{gather*}
 a_{\mathit{sh}} = b + v_{\mathit{secindex}.\mathit{base}} \\
-A = [a_{\mathit{sh}} + \mathtt{0x10},\; a_{\mathit{sh}} + \mathtt{0x10} + v_{\mathit{secindex}.\mathit{name\_len}}]
+A = [a_{\mathit{sh}} + \mathtt{0x10},\; a_{\mathit{sh}} + \mathtt{0x10} + v_{\mathit{secindex}.\mathit{name_len}}]
 \end{gather*}
 
 Let *B*= the data sets, you could get the data's base address and its length through:
@@ -55,4 +55,96 @@ For further informations, you shall lookup the `SectionHeader`'s definitions. Se
 
 The loading precedure can be described by following figure:
 
-![Flowchart of Loading PKE](../assets/fig-5.1-pke-load-flowchart.svg)
+## Construct PKE
+
+PKE construction is the **inverse procedure of parsing**. Parsing reads structured data from a valid PKE binary buffer, while construction assembles discrete headers, section metadata and raw binary data into a standard, spec-compliant PKE executable file.
+
+All mathematical conventions and variable definitions in the previous parsing section remain valid in the construction process.
+
+### Core Construction Principle
+
+PKE construction strictly follows the official memory layout specification of PKE binaries. The construction order is fixed and non-negotiable:
+
+1. Generate and fill valid PKE global header
+2. Calculate section count and allocate space for continuous `SectionIndex` table
+3. Iterate each section to write `SectionIndex` metadata
+4. Write corresponding `SectionHeader` and section name string
+5. Append raw section data payload
+6. Verify overall file offset alignment and format legality
+
+Now we explain them in detailed.
+
+### Construct PKE Global Header
+
+The global header is the root of a valid PKE file and occupies a fixed size of $\mathtt{0x80}$ bytes. All fields must be strictly initialized according to the PKE specification.
+
+Key construction rules:
+
+- Hardcode the magic number to `PKEX` for format identification
+- Fill version fields (`version_minimal`, `version_maximum`, `version_current`) to match the build target version
+- Assign accurate `sections` count equal to the total number of defined sections
+- Reserve and zeroize reserved fields to ensure binary compatibility
+
+A correctly constructed header provides basic validity verification for subsequent parsing and loading procedures.
+
+### Allocate `SectionIndex` Table Space
+
+The `SectionIndex` table starts right after the global header. Each `SectionIndex` entry occupies $\mathtt{0x40}$ bytes, and entries are stored contiguously without gaps.
+
+Let $N = v_{\mathit{header}.\mathit{sections}}$ represent the total section count.
+The total occupied size of the index table satisfies: $S_{\mathit{index-table}} = N \times \mathtt{0x40}$
+
+The base offset of the first `SectionIndex` is fixed: $a_{\mathit{si-base}} = b + \mathtt{0x80}$
+
+### Write Iterative `SectionIndex` Entries
+
+Traverse all target sections in order, fill each `SectionIndex` entry sequentially. For the $i$-th section ($i \in [0, N)$), the entry offset follows the unified formula: $a_{\mathit{si}} = b + \mathtt{0x80} + (\mathtt{0x40}i)$
+
+For each index entry, fill core metadata:
+
+- `base`: Offset of the corresponding `SectionHeader` relative to the PKE buffer base address *b*
+- `name_len`: Valid length of the section name string
+- Reserved fields: zero-filled to comply with specification alignment rules
+
+### Construct `SectionHeader` and Section Name
+
+Based on the offset recorded in `SectionIndex`, construct the complete `SectionHeader` structure.
+Let $a_{\mathit{sh}}$ be the base address of current `SectionHeader`: $a_{\mathit{sh}} = b + v_{\mathit{secindex}.\mathit{base}}$
+
+The section name string is stored at the fixed offset $\mathtt{0x10}$ of `SectionHeader`. The valid address range of the section name is consistent with the parsing rule: $A = [a_{\mathit{sh}} + \mathtt{0x10},\; a_{\mathit{sh}} + \mathtt{0x10} + v_{\mathit{secindex}.\mathit{name\_len}}]$
+
+Write custom section name characters within the range *A*, and complete zero-padding for exceeding length positions. Meanwhile, fill section attributes in `SectionHeader`, including load flags, execution permissions, memory alignment and data size.
+
+### Append Section Raw Data
+
+After completing metadata construction, append the actual binary payload of each section.
+
+Recorded by `SectionHeader` metadata:
+
+\begin{gather*}
+a_{\mathit{data}} = b + v_{\mathit{sechead}.\mathit{base}} \\
+B = [a_{\mathit{data}},\; a_{\mathit{data}} + v_{\mathit{sechead}.\mathit{size}})
+\end{gather*}
+
+Write the compiled raw binary data into the address range *B*, ensuring that the actual data size strictly matches the `size` field defined in `SectionHeader`. Excess space is zero-filled to maintain offset alignment of the entire PKE file.
+
+### Final Format Verification
+
+After all data construction is completed, perform full PKE legality check:
+
+1. Verify header magic number and version validity
+2. Check whether section count matches the actual number of constructed index entries
+3. Traverse all sections to verify the consistency of offset, length and data content
+4. Confirm all reserved fields are zeroized and all memory alignment rules are satisfied
+
+Only PKE files that pass all verification items can be regarded as standard compliant binaries and support normal parsing, kernel loading and runtime execution.
+
+### Construction Flow Summary
+
+The complete PKE construction workflow is strictly reversible with the parsing workflow:
+**Raw Binary Data → Section Metadata Assembly → Index Table Construction → Global Header Initialization → Standard PKE Binary File**
+
+::: {.callout-tip}
+All offset formulas used in construction are fully consistent with the parsing algorithm. This bidirectional consistency ensures zero offset deviation between PKE encoding and decoding, and guarantees the stability of cross-version parsing and loading.
+:::
+
