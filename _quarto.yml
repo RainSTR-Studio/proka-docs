@@ -17,6 +17,7 @@ book:
       chapters:
         - part-2/c3-intro.qmd
         - part-2/c4-pke-defs.qmd
+        - part-2/c5-guide.qmd
 
 format:
   html:

@@ -1,9 +1,9 @@
 # Definitions of Each Elements of PKE
 
-## Definitions of PKE headers
+## Definitions of PKE Headers
 
-### `Header`
-The `Header` is defined as follow:
+### `Header` {#sec-pke-header}
+The `Header` is defined as follow (128):
 
 ```rust
 #[repr(C)]
@@ -54,7 +54,7 @@ Each field's descriptions:
 | `reserved` 	| `[u8; 20]` 	| yes 	| Reserved fields for further features.		|
 
 ### `ExecMode` {#sec-pke-header-execmode}
-The `ExecMode` is defined as follow:
+The `ExecMode` is defined as follow (1):
 
 ```rust
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Pod, Zeroable)]
@@ -77,4 +77,74 @@ Since this is based on bits, each bits' field is defined as following:
 | Mode select 	| `0` 	| `0`=UserApp, `1`=Coredrv 	|
 | Reserved 	| `1..7` 	| Reserved, shall be ignored 	|
 
+## Definitions of PKE Section Elements
+
+### `SectionIndex`
+Code definitions (8):
+
+```rust
+#[repr(C)]
+#[derive(Debug, Clone, Copy, Pod, Zeroable)]
+pub struct SectionIndex {
+    pub(crate) base: u32,
+    pub(crate) name_len: u32,
+}
+```
+
+Field explanations:
+
+| Field name 	| Type 	| Is public 	| Description 	|
+|---	|---	|---	|---	|
+| `base` 	| `u32` 	| yes 	| The base offset of `SectionHeader` 	|
+| `name_len` 	| `u32` 	| yes 	| The length of section name. NUL byte (`\0`) is not included. 	|
+
+### `SectionHeader` {#sec-pke-section-hdr}
+Code definitions (16):
+
+```rust
+#[repr(C)]
+#[derive(Debug, Clone, Copy, Pod, Zeroable)]
+pub struct SectionHdr {
+    pub flag: SectionFlag,
+    _pad1: [u8; 3],
+    pub base: u32,
+    pub size: u32,
+    _pad2: [u8; 4],
+}
+```
+
+Field explainations:
+
+| Field name 	| Type 	| Is public 	| Description 	|
+|---	|---	|---	|---	|
+| `flags` 	| `SectionFlags` 	| yes 	| Flag of this section. See @sec-pke-section-flags for details. 	|
+| `_pad1` 	| `u32` 	| no 	| Padding field #1. 	|
+| `base` 	| `u32` 	| yes 	| The base offset of data. 	|
+| `size` 	| `u32` 	| yes 	| Size of this section. 	|
+| `_pad2` 	| `u32` 	| no 	| Padding field #2. 	|
+
+### `SectionFlags` {#sec-pke-section-flags}
+Code definitons (1):
+
+```rust
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Pod, Zeroable)]
+pub struct SectionFlags(u8);
+
+impl ExecMode {
+    pub const LOADABLE: Self = 1;
+    pub const EXECABLE: Self = 1 << 1;
+}
+```
+
+::: {.callout-note}
+This struct is wrapped by `bitflags` macro.
+:::
+
+Field explanation:
+
+| Field 	| Bits 	| Description 	|
+|---	|---	|---	|
+| `LOADABLE` 	| `0` 	| `0`=Not loadable, `1`=Loadable 	|
+| `EXECABLE` 	| `1` 	| `0`=Not execable, `1`=Execable 	|
+| Reserved 	| `2..7` 	| Reserved bits, shall be ignored. 	|
 
